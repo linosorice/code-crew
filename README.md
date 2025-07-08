@@ -1,233 +1,236 @@
-# Code Crew – Project Document
+# **Code Crew — Advanced Project Charter** 🚀✨
 
-## Version 2.0 · 08 July 2025
-
----
-
-### Table of Contents
-
-1. Context
-2. Key Objectives
-3. Project Scope
-4. Stakeholders
-5. Main Assumptions
-6. High‑Level Architecture
-7. Components (Conductor CLI, Sandbox Pool, Observability)
-8. Detailed Workflow
-9. `code‑crew` CLI – Design & Usage
-10. KPI & Dashboard
-11. Security
-12. Governance & Alerts
-13. Technical Roadmap (local system)
-14. Open‑Source Strategy
-15. OSS + CLI Roadmap
-16. Risks & Mitigations
-17. Attachments
+**Version 2.0 — 8 July 2025** 📅
 
 ---
 
-## 1 · Context
+### Table of Contents 📚
 
-This project targets **CTOs, staff engineers, and open‑source maintainers** who want to run a *team* of specialised **AI agents** for software development. The agents are powered by Claude Code and can collaborate across **multiple, even inter‑connected GitHub repositories** (federated monorepos, shared libraries, micro‑services). They tackle features, bug‑fixes, refactors, and optimisations with automatic coordination.
+1. 🎯 Context and Rationale
+2. 🚀 Strategic Aims
+3. 🗺️ Delimitation of Scope
+4. 👥 Stakeholder Ecosystem
+5. 🔑 Foundational Assumptions
+6. 🏗️ Macro‑Architecture
+7. 🧩 Component Taxonomy
+8. 🔄 Operational Workflow
+9. 🛠️ `code‑crew` CLI — Design Philosophy and Command Surface
+10. 📈 Key Performance Indicators & Instrumentation
+11. 🛡️ Security Posture
+12. ⚙️ Governance, Alerting, and Control Loops
+13. 🗓️ Local‑System Delivery Roadmap
+14. 🌐 Open‑Source Strategic Framework
+15. 📅 OSS & CLI Incremental Roadmap
+16. ⚠️ Risk Register & Mitigation Framework
+17. 📎 Appendices
 
-A human remains the final decision‑maker (PR merge, policies); the system delivers operational autonomy, observability, and a CLI to orchestrate the agents.
+---
 
-## 2 · Key Objectives
+## 1 · Context and Rationale 🎯
 
-1. **Agent autonomy** with ready‑to‑review pull requests.
-2. **Human governance** (manual PR approval).
-3. **Progressive quality** (upward trends in tests & linting, downward debt).
-4. **Local‑first**: everything runs on a single machine.
-5. **Live observability** with 4‑h stalled‑task alerts.
-6. **Open‑source friendly**: Apache 2.0 licence and CLI usable by third parties.
+Modern software organisations increasingly leverage specialised artificial agents to augment — and occasionally supplant — discrete stages of the development life‑cycle. **Code Crew** serves **chief technologists, principal engineers, and open‑source stewards** who wish to orchestrate a **distributed cohort of Claude‑Code‑driven agents** capable of maintaining, extending, and refactoring multiple — and potentially inter‑dependent — GitHub repositories (for example, federated monorepos, shared libraries, or micro‑service ensembles).
 
-## 3 · Project Scope
+Although algorithmic actors perform the tactical work, *ultimate authority* remains with a human reviewer, thereby safeguarding strategic alignment and regulatory compliance. Consequently, the platform emphasises autonomous execution, transparent observability, and ergonomic orchestration through a dedicated command‑line interface.
 
-| In scope                                             | Out of scope                       |
-| ---------------------------------------------------- | ---------------------------------- |
-| Vertical agents backend / frontend / test / refactor | Generic multitask agents           |
-| GitHub Issues ↔ PR integration                       | Running *agents* on GitHub Actions |
-| Local Docker sandbox                                 | Languages other than TS/JS         |
-| Local Prometheus + Grafana                           | Advanced regulatory compliance     |
-| Agent management CLI                                 | —                                  |
+## 2 · Strategic Aims 🚀
 
-## 4 · Stakeholders
+1. 🧠 **Autonomous contribution** — Agents generate merge‑ready pull requests with minimal human intervention.
+2. 🕵️‍♂️ **Human‑centred oversight** — Merge privileges remain with the supervising engineer.
+3. 📈 **Incremental quality elevation** — Continuous gains in test coverage and static‑analysis conformance, alongside systematic technical‑debt reduction.
+4. 🖥️ **Local primacy** — The entire execution stack operates on a single workstation, obviating cloud dependencies.
+5. ⏱️ **Real‑time introspection** — Live telemetry coupled with a four‑hour stall sentinel.
+6. 🌍 **Open‑source propagation** — Apache 2.0 licensing ensures frictionless adoption by external contributors.
 
-| Role                           | Responsibility                      |
-| ------------------------------ | ----------------------------------- |
-| Product Owner                  | Functional roadmap                  |
-| **Tech Lead / Human Reviewer** | Backlog, PR reviews, KPI monitoring |
-| Part‑time Dev Ops              | Docker & observability stack        |
-| OSS Community                  | Issues & improvement PRs            |
+## 3 · Delimitation of Scope 🗺️
 
-## 5 · Main Assumptions
+| **Included**                                              | **Excluded**                                        |
+| --------------------------------------------------------- | --------------------------------------------------- |
+| 🤖 Specialised agents (backend, frontend, test, refactor) | 🧩 General‑purpose or meta‑agents                   |
+| 🔄 Bidirectional GitHub Issue → Pull Request workflow     | ⛔ Execution of agents within GitHub Actions         |
+| 🐳 Local Docker sandboxes                                 | 🛑 Non‑TypeScript / non‑JavaScript language support |
+| 📊 In‑situ Prometheus + Grafana observability             | 🏛️ Advanced regulatory‑compliance tool‑chains      |
+| 🛠️ Management CLI (`code‑crew`)                          | —                                                   |
 
-* Anthropic API key available.
-* Laptop/host with ≥ 16 GB RAM; Docker Desktop with 4 GB allocated.
-* GitHub PAT with `contents`, `issues`, `pull_requests` scopes.
+## 4 · Stakeholder Ecosystem 👥
 
-## 6 · High‑Level Architecture
+| **Actor**                                 | **Mandate**                                                        |
+| ----------------------------------------- | ------------------------------------------------------------------ |
+| 👑 Product Owner                          | Curates the functional roadmap and prioritisation matrix.          |
+| 👨‍💻 **Technical Lead / Human Reviewer** | Manages the backlog, adjudicates pull requests, and monitors KPIs. |
+| 🛠️ Auxiliary DevOps Engineer             | Maintains the container runtime and observability substrate.       |
+| 🌐 Open‑Source Community                  | Submits issues and enhancement pull requests.                      |
 
-```
-┌──────────────┐        ┌──────────────────────┐
-│ GitHub Issue │◄──────►│ Conductor (Node/TS)  │
-└──────────────┘        └───────┬──────────────┘
-        ▲  CLI cmd              │   /metrics
-        │                       ▼
+## 5 · Foundational Assumptions 🔑
+
+* 🔐 A valid Anthropic API credential is provisioned.
+* 💾 The host system furnishes ≥ 16 GiB RAM; Docker Desktop reserves ≥ 4 GiB.
+* 🗝️ The GitHub personal‑access token possesses the scopes `contents`, `issues`, and `pull_requests`.
+
+## 6 · Macro‑Architecture 🏗️
+
+```text
+┌──────────────┐        ┌──────────────────────────┐
+│ GitHub Issue │◄──────►│ Conductor (Node + TS)    │
+└──────────────┘        └────────┬─────────────────┘
+        ▲  CLI interaction        │   /metrics
+        │                         ▼
    code‑crew               ┌──────────────┐
-      (npm)                │ Sandbox Pool │  (Docker, 1–N)
+      (npm)                │ Sandbox Pool │  (Docker, N ≥ 1)
                            └──────────────┘
                                   ▲
-                                  │  logs/stdout
+                                  │ structured logs
                                   ▼
-                           ┌──────────────┐
-                           │ Grafana ← Prom + Loki │
-                           └──────────────┘
+                           ┌────────────────────┐
+                           │ Grafana ⇐ Prom + Loki │
+                           └────────────────────┘
 ```
 
-## 7 · Components in Detail
+## 7 · Component Taxonomy 🧩
 
-### 7.1 Conductor (core)
+### 7.1 Conductor (Orchestration Kernel) 🕹️
 
-* **Node 22 + TypeScript**
-* Modules: `github.ts`, `scheduler.ts`, `sandbox‑driver.ts`, `metrics.ts`
-* Config file: `conductor.config.yml` (poll interval, concurrency, tokens, agents list)
+* ⚙️ **Implementation** — Node 22 + TypeScript.
+* 🧩 **Modules** — `github.ts`, `scheduler.ts`, `sandbox‑driver.ts`, `metrics.ts`.
+* 📝 **Configuration** — `conductor.config.yml`, defining polling cadence, concurrency ceiling, authentication artefacts, and the agent registry.
 
-### 7.2 Sandbox Pool
+### 7.2 Sandbox Pool 🛠️
 
-| Image            | Stack                                            | Label    |
-| ---------------- | ------------------------------------------------ | -------- |
-| `agent-backend`  | node:22‑slim, Claude Code, ts‑node, Jest, Prisma | backend  |
-| `agent-frontend` | node:22‑slim, Claude Code, Next 14, Playwright   | frontend |
-| `agent-test`     | node:22‑slim, Claude Code, Jest, nyc             | test     |
-| `agent-refactor` | node:22‑slim, Claude Code, ESLint, SonarJS       | refactor |
+| **Container Image** | **Tool‑chain Constituents**                      | **Semantic Label** |
+| ------------------- | ------------------------------------------------ | ------------------ |
+| 🐋 `agent‑backend`  | node:22‑slim, Claude Code, ts‑node, Jest, Prisma | backend            |
+| 🐋 `agent‑frontend` | node:22‑slim, Claude Code, Next 14, Playwright   | frontend           |
+| 🐋 `agent‑test`     | node:22‑slim, Claude Code, Jest, nyc             | test               |
+| 🐋 `agent‑refactor` | node:22‑slim, Claude Code, ESLint, SonarJS       | refactor           |
 
-* Default `--network=none`; hard timeout 3 h 45 m.
+* 🔒 **Network isolation** — `--network=none` by default.
+* ⏲️ **Execution cutoff** — Hard wall‑clock limit of 3 h 45 m.
 
-### 7.3 Observability (docker‑compose)
+### 7.3 Observability Stack 📈
 
-* **Prometheus** scraping `/metrics`
-* **Loki** for JSON logs
-* **Grafana** dashboard for KPIs
+* 📊 **Prometheus** — Scrapes quantitative metrics from `/metrics`.
+* 📜 **Loki** — Aggregates JSON‑encoded logs.
+* 📈 **Grafana** — Synthesises operational metrics into dashboards.
 
-## 8 · Detailed Workflow
+## 8 · Operational Workflow 🔄
 
-1. **Issue** labelled `agent:*` is opened.
-2. **Scheduler** enqueues the task (FIFO).
-3. **Clone / update** repo in `~/agents`.
-4. Create **branch** `agent/<type>/<slug>`.
-5. **Sandbox** executes `claude fix "<prompt>"`.
-6. Run local **tests** (`npm test`), generate tests if missing.
-7. **Success** → commits & pushes; opens PR labelled `needs‑human‑review`.
-8. **Fail** → comments Issue with log link.
-9. **Human review** → merge.
-10. **Metrics** recorded to Prometheus.
+1. 📝 A GitHub **Issue** labelled `agent:*` arises (authored by a human or an agent).
+2. 📑 The **Scheduler** enqueues the work item (FIFO).
+3. 📥 The target repository is **cloned or fast‑forwarded** into `~/agents`.
+4. 🌿 A **feature branch** `agent/<type>/<slug>` is created.
+5. 🤖 The relevant **sandbox** runs `claude fix "<prompt>"`, orchestrating modifications.
+6. 🧪 Unit tests run via `npm test`; if absent, suites are generated automatically.
+7. ✅ On **success**, commits are pushed and a pull request labelled `needs‑human‑review` opens.
+8. ❌ On **failure**, the Issue receives a diagnostic link to logs.
+9. 👁️ The **Human Reviewer** scrutinises and merges the pull request if satisfied.
+10. 📊 The **Metrics module** emits performance artefacts to Prometheus.
 
-## 9 · `code‑crew` CLI – Design & Usage
+## 9 · `code‑crew` CLI — Design Philosophy and Command Surface 🛠️
 
-### 9.1 Installation
+### 9.1 Installation Vector 📦
 
 ```bash
-npm i -g code-crew
-code-crew init    # wizard (API key, PAT, workspace path)
+npm install -g code-crew
+code-crew init   # interactive wizard: API key, PAT, workspace directory
 ```
 
-### 9.2 Main Commands
+### 9.2 Command Topology 🗺️
 
-| Command                    | Alias  | Action                                |
-| -------------------------- | ------ | ------------------------------------- |
-| `start [-d]`               | `run`  | Start / daemonise Conductor           |
-| `stop`                     | —      | Stop Conductor                        |
-| `status`                   | `stat` | Snapshot of sandbox pool, queue, KPIs |
-| `agent add <name> <image>` | `a+`   | Register a new agent                  |
-| `agent rm <name>`          | `a-`   | Disable an agent                      |
-| `config set <key> <val>`   | `cfg`  | Change runtime config (hot‑reload)    |
-| `doctor`                   | `diag` | Environment diagnostics               |
+| **Command**                   | **Alias** | **Purpose**                                             |
+| ----------------------------- | --------- | ------------------------------------------------------- |
+| ▶️ `start [-d]`               | `run`     | Launch — and optionally daemonise — the Conductor.      |
+| ⏹️ `stop`                     | —         | Gracefully halt the Conductor.                          |
+| 📊 `status`                   | `stat`    | Snapshot of queue depth, sandbox utilisation, and KPIs. |
+| ➕ `agent add <name> <image>`  | `a+`      | Register a new agent.                                   |
+| ➖ `agent rm <name>`           | `a-`      | Temporarily disable an agent.                           |
+| ⚙️ `config set <key> <value>` | `cfg`     | Hot‑reload configuration.                               |
+| 🩺 `doctor`                   | `diag`    | Validate environmental prerequisites.                   |
 
-### 9.3 Configuration Files
+### 9.3 Configuration Artefacts 📝
 
-* **Global**: `~/.code-crew/conductor.config.yml`
-* **Per‑repo override**: `<repo>/.code-crew.yml`
+* 📂 **Global** — `~/.code-crew/conductor.config.yml`.
+* 📂 **Repository override** — `<repo>/.code-crew.yml`.
 
-### 9.4 Typical Workflow
+### 9.4 Nominal Usage Trajectory 🚀
 
 ```bash
 code-crew init
 code-crew agent add backend ghcr.io/org/agent-backend:1.0
 code-crew start -d
 code-crew status
-# … review PR on GitHub …
+# … perform code review on GitHub …
 code-crew stop
 ```
 
-## 10 · KPI & Dashboard
+## 10 · Key Performance Indicators & Instrumentation 📈
 
-| KPI                       | Source                  | Grafana panel | Threshold    |
-| ------------------------- | ----------------------- | ------------- | ------------ |
-| **Cycle Time (h)**        | prom `cycle_time_hours` | Histogram     | > 4 h        |
-| **Pass Rate (%)**         | success/total           | Gauge         | < 95 %       |
-| **Coverage Δ**            | nyc diff                | Bar           | +2 pp target |
-| **Review Iterations**     | PR comment count        | Heatmap       | > 3          |
-| **Throughput (tasks/wk)** | pipeline                | Line chart    | trend        |
+| **Indicator**        | **Prometheus Source**    | **Grafana Panel** | **Alert Threshold** |
+| -------------------- | ------------------------ | ----------------- | ------------------- |
+| ⏱️ Cycle Time (h)    | `cycle_time_hours` gauge | Histogram         | > 4 h               |
+| ✅ Pass Rate (%)      | Successful runs / total  | Gauge             | < 95 %              |
+| 🧪 Coverage Δ (pp)   | nyc differential         | Bar               | ≥ +2 pp             |
+| 💬 Review Iterations | PR comment count         | Heatmap           | > 3                 |
+| 📈 Weekly Throughput | Tasks merged             | Line              | Trend               |
 
-## 11 · Security
+## 11 · Security Posture 🛡️
 
-* Credentials stored locally with `chmod 600`.
-* Sandboxes run in isolated network.
-* No data egress.
+* 🔐 Credentials stored locally with restrictive permissions (`chmod 600`).
+* 🌐 Containers execute within a network‑isolated context.
+* 🚫 No user data is routed externally.
 
-## 12 · Governance & Alerts
+## 12 · Governance, Alerting, and Control Loops ⚙️
 
-* 4‑h stalled‑task alert via `notify-send` and Slack.
-* Auto‑disable an agent after two consecutive failures.
-* Weekly KPI summary to `#eng‑metrics`.
+* ⏰ **Stall sentinel** — Four‑hour inactivity triggers desktop and Slack alerts.
+* 🚫 **Auto‑suspension** — An agent failing twice consecutively is disabled.
+* 🗞️ **Weekly digest** — KPI summary posted to `#eng-metrics`.
 
-## 13 · Technical Roadmap (local system)
+## 13 · Local‑System Delivery Roadmap 🗓️
 
-| Week | Deliverable                    | KPI gate              |
-| ---- | ------------------------------ | --------------------- |
-| 1    | Conductor polling + `/metrics` | Cycle‑time logging OK |
-| 2    | 5 sandbox images               | Build OK              |
-| 3    | Grafana dashboard v1           | KPIs visible          |
-| 4    | Pilot repo mapping             | Hotspots report       |
-| 5    | First 3 agent PRs              | Pass‑rate > 90 %      |
-| 6    | Prompt tuning + concurrency 2  | Cycle < 4 h           |
-| 7    | Multi‑repo rollout             | Throughput ↑          |
-| 8    | Hardening & escalation rules   | Zero stalled tasks    |
+| **Week** | **Milestone**                            | **Acceptance KPI**             |
+| -------- | ---------------------------------------- | ------------------------------ |
+| 1        | 📡 Conductor polling & metric exposition | Cycle‑time logging operational |
+| 2        | 🖼️ Build four sandbox images            | Images runnable                |
+| 3        | 📊 Baseline Grafana dashboard            | KPIs visible                   |
+| 4        | 🔍 Repository cartography (pilot)        | Hotspot report ready           |
+| 5        | 🚀 First three agent PRs                 | Pass rate > 90 %               |
+| 6        | 🧠 Prompt tuning, concurrency 2          | Mean cycle < 4 h               |
+| 7        | 🌐 Multi‑repo rollout                    | Throughput rising              |
+| 8        | 🛠️ Hardening & escalation logic         | Zero stalled tasks             |
 
-## 14 · Open‑Source Strategy
+## 14 · Open‑Source Strategic Framework 🌐
 
-* **Licence**: Apache 2.0
-* **Public repo**: `github.com/linosorice/code-crew`
-* Structure: `packages/` (conductor, sandbox‑images, plugins), `examples/`, `docs/`
-* Public CI: lint & unit tests only; agents do **not** run in Actions.
-* Governance: CODEOWNERS, CLA‑bot, semantic‑release.
+* 📜 **Licence** — Apache 2.0.
+* 🏛️ **Canonical repository** — [https://github.com/linosorice/code-crew](https://github.com/linosorice/code-crew).
+* 📁 **Layout** — `packages/` (conductor, sandbox‑images, plugins) • `examples/` • `docs/`.
+* 🛑 **Public CI** — Restricted to linting and unit testing; agents are **not** executed in CI.
+* 📑 **Governance instruments** — CODEOWNERS, Contributor License Agreement bot, and semantic‑release.
 
-## 15 · OSS & CLI Roadmap
+## 15 · OSS & CLI Incremental Roadmap 📅
 
-| Sprint | Deliverable                                           |
-| ------ | ----------------------------------------------------- |
-| 1      | Public repo with LICENSE, README, docs skeleton       |
-| 2      | NPM package `code-crew` v0.1 (`init`, `start`)        |
-| 3      | Commands `agent add/rm`, `config set` + plugin schema |
-| 4      | `status` command + Prometheus scraper                 |
-| 5      | `doctor` command + demo repo `todos‑app`              |
-| 6      | Blog post announcement + call for contributors        |
+| **Sprint** | **Deliverable**                                              | **Key Outcome**         |
+| ---------- | ------------------------------------------------------------ | ----------------------- |
+| 1          | 🏁 Public repo seeded with legal artefacts and skeletal docs | Repository visible      |
+| 2          | 📦 Release `code‑crew` NPM package v0.1 (`init`, `start`)    | Package installable     |
+| 3          | 🧩 Add `agent add/rm` & `config set`; freeze plugin schema   | CLI feature‑complete    |
+| 4          | 📊 Enhance `status` with Prometheus scraping                 | Real‑time CLI stats     |
+| 5          | 🩺 Publish `doctor` command & demo repo `todos‑app`          | On‑boarding streamlined |
+| 6          | 📣 Blog post + contributor call‑to‑action                    | Community engagement    |
 
-## 16 · Risks & Mitigations
+## 16 · Risk Register & Mitigation Framework ⚠️
 
-| Risk                   | Prob. | Impact | Mitigation                              |
-| ---------------------- | ----- | ------ | --------------------------------------- |
-| Laptop RAM saturation  | M     | M      | Concurrency 2, 4 GB Docker limit        |
-| Prompt exceeds context | M     | L      | `contextWindow = 90k`                   |
-| Breaking NPM deps      | L     | M      | Lockfile maintenance script             |
-| OSS support overhead   | M     | L      | Contrib guidelines, `help‑wanted` label |
+| **Risk Scenario**                       | **Likelihood** | **Severity** | **Mitigation Strategy**                                     |
+| --------------------------------------- | -------------- | ------------ | ----------------------------------------------------------- |
+| 🖥️ Host memory exhaustion              | Medium         | Medium       | Limit concurrency to 2; Docker mem‑cap 4 GiB                |
+| 📝 Prompt exceeds Claude context window | Medium         | Low          | Summarise inputs; set `contextWindow` 90 k tokens           |
+| 🔗 Upstream dependency breakage         | Low            | Medium       | Nightly lockfile refresh via maintenance script             |
+| 🌍 OSS community support burden         | Medium         | Low          | Enforce contrib guidelines; triage with `help‑wanted` label |
 
-## 17 · Attachments
+## 17 · Appendices 📎
 
-**A1** `agent_task.yml` issue template · **A2** `docker-compose.yml` observability · **A3** 4‑h Alertmanager rule (all stored in the `code‑crew` repo).
+**A1** `agent_task.yml` — Issue template 🗒️
+**A2** `docker-compose.yml` — Observability stack 🐳
+**A3** Alertmanager rule for four‑hour stalls ⏰
+(All files reside in the `code‑crew` repository.)
 
 ---
 
-Released under **Apache 2.0**
-
+© 2025 Code Crew Project — released under **Apache 2.0** 🎉
